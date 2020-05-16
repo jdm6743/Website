@@ -4,3 +4,163 @@ Initialized empty Git repository in /stor/home/jdm6743/Website_CB/.git/
 config.toml  index.Rmd  [0m[01;34mstatic[0m  Website_CB.Rproj
 [01;34mcontent[0m      [01;34mpublic[0m     [01;34mthemes[0m
 ]0;/stor/home/jdm6743/Website_CB]0;jdm6743@educcomp01: ~/Website_CB[01;32mjdm6743@educcomp01[00m:[01;34m~/Website_CB[00m$ git add .
+]0;/stor/home/jdm6743/Website_CB]0;jdm6743@educcomp01: ~/Website_CB[01;32mjdm6743@educcomp01[00m:[01;34m~/Website_CB[00m$ git commit -m "first  try"
+[master (root-commit) 07e1be9] first try
+ Committer: Jessica Martin <jdm6743@educcomp01.ccbb.utexas.edu>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 121 files changed, 8663 insertions(+)
+ create mode 100644 .Rproj.user/64399D66/console06/A35D4A39
+ create mode 100644 .Rproj.user/64399D66/console06/A35D4A39.env
+ create mode 100644 .Rproj.user/64399D66/console06/INDEX001
+ create mode 100644 .Rproj.user/64399D66/sources/prop/2B5C5D0C
+ create mode 100644 .Rproj.user/64399D66/sources/prop/2DCBC264
+ create mode 100644 .Rproj.user/64399D66/sources/prop/3F94D58A
+ create mode 100644 .Rproj.user/64399D66/sources/prop/8629EB60
+ create mode 100644 .Rproj.user/64399D66/sources/prop/90056531
+ create mode 100644 .Rproj.user/64399D66/sources/prop/C3D82003
+ create mode 100644 .Rproj.user/64399D66/sources/prop/INDEX
+ create mode 100644 .Rproj.user/64399D66/sources/s-e4e62722/24F56760
+ create mode 100644 .Rproj.user/64399D66/sources/s-e4e62722/24F56760-contents
+ create mode 100644 .Rproj.user/64399D66/sources/s-e4e62722/5A5EC807-contents
+ create mode 100644 .Rproj.user/64399D66/sources/s-e4e62722/7F33A1F2-contents
+ create mode 100644 .Rproj.user/64399D66/sources/s-e4e62722/8F04958E
+ create mode 100644 .Rproj.user/64399D66/sources/s-e4e62722/8F04958E-contents
+ create mode 100644 .Rproj.user/64399D66/sources/s-e4e62722/A8759436
+ create mode 100644 .Rproj.user/64399D66/sources/s-e4e62722/A8759436-contents
+ create mode 100644 .Rproj.user/64399D66/sources/s-e4e62722/C425D1BD
+ create mode 100644 .Rproj.user/64399D66/sources/s-e4e62722/C425D1BD-contents
+ create mode 100644 .Rproj.user/64399D66/sources/s-e4e62722/FF7D263E
+ create mode 100644 .Rproj.user/64399D66/sources/s-e4e62722/FF7D263E-contents
+ create mode 100644 .Rproj.user/64399D66/sources/s-e4e62722/lock_file
+ create mode 100644 .Rproj.user/shared/notebooks/BADD4277-project1/1/s/chunks.json
+ create mode 100644 .Rproj.user/shared/notebooks/patch-chunk-names
+ create mode 100644 .Rproj.user/shared/notebooks/paths
+ create mode 100644 Website_CB.Rproj
+ create mode 100644 config.toml
+ create mode 100644 content/CompBio-Project-1.pdf
+ create mode 100644 content/project1.Rmd
+ create mode 100644 content/projects.md
+ create mode 100644 index.Rmd
+ create mode 100644 public/404.html
+ create mode 100644 public/CompBio-Project-1.pdf
+ create mode 100644 public/Jessica Martin Resume--updated.pdf
+ create mode 100644 public/blog/2015-07-23-r-rmarkdown.Rmd
+ create mode 100644 public/blog/2015-07-23-r-rmarkdown/index.html
+ create mode 100644 public/blog/2015-07-23-r-rmarkdown_files/figure-html/pie-1.png
+ create mode 100644 public/blog/creating-a-new-theme/index.html
+ create mode 100644 public/blog/goisforlovers/index.html
+ create mode 100644 public/blog/hugoisforlovers/index.html
+ create mode 100644 public/blog/index.html
+ create mode 100644 public/blog/index.xml
+ create mode 100644 public/blog/migrate-from-jekyll/index.html
+ create mode 100644 public/categories/development/index.html
+ create mode 100644 public/categories/development/index.xml
+ create mode 100644 public/categories/golang/index.html
+ create mode 100644 public/categories/golang/index.xml
+ create mode 100644 public/categories/index.html
+ create mode 100644 public/categories/index.xml
+ create mode 100644 public/categories/projects/index.html
+ create mode 100644 public/categories/projects/index.xml
+ create mode 100644 public/categories/r/index.html
+ create mode 100644 public/categories/r/index.xml
+ create mode 100644 public/css/main.css
+ create mode 100644 public/img/profile.jpg
+ create mode 100644 public/img/profile.pdf
+ create mode 100644 public/img/profile.png
+ create mode 100644 public/index.html
+ create mode 100644 public/index.xml
+ create mode 100644 public/js/docs.min.js
+ create mode 100644 public/js/ie10-viewport-bug-workaround.js
+ create mode 100644 public/js/main.js
+ create mode 100644 public/projects/index.html
+ create mode 100644 public/resume.pdf
+ create mode 100644 public/sitemap.xml
+ create mode 100644 public/tags/development/index.html
+ create mode 100644 public/tags/development/index.xml
+ create mode 100644 public/tags/go/index.html
+ create mode 100644 public/tags/go/index.xml
+ create mode 100644 public/tags/golang/index.html
+ create mode 100644 public/tags/golang/index.xml
+ create mode 100644 public/tags/hugo/index.html
+ create mode 100644 public/tags/hugo/index.xml
+ create mode 100644 public/tags/index.html
+ create mode 100644 public/tags/index.xml
+ create mode 100644 public/tags/plot/index.html
+ create mode 100644 public/tags/plot/index.xml
+ create mode 100644 public/tags/projects/index.html
+ create mode 100644 public/tags/projects/index.xml
+ create mode 100644 public/tags/r-markdown/index.html
+ create mode 100644 public/tags/r-markdown/index.xml
+ create mode 100644 public/tags/regression/index.html
+ create mode 100644 public/tags/regression/index.xml
+ create mode 100644 public/tags/templates/index.html
+ create mode 100644 public/tags/templates/index.xml
+ create mode 100644 public/tags/themes/index.html
+ create mode 100644 public/tags/themes/index.xml
+ create mode 100644 static/Jessica Martin Resume--updated.pdf
+ create mode 100644 static/blog/2015-07-23-r-rmarkdown_files/figure-html/pie-1.png
+ create mode 100644 static/img/profile.jpg
+ create mode 100644 static/resume.pdf
+ create mode 100644 themes/hugo-sustain/LICENSE.md
+ create mode 100644 themes/hugo-sustain/README.md
+ create mode 100644 themes/hugo-sustain/archetypes/default.md
+ create mode 100644 themes/hugo-sustain/exampleSite/config.toml
+ create mode 100644 themes/hugo-sustain/exampleSite/content/blog/creating-a-new-theme.md
+ create mode 100644 themes/hugo-sustain/exampleSite/content/blog/goisforlovers.md
+ create mode 100644 themes/hugo-sustain/exampleSite/content/blog/hugoisforlovers.md
+ create mode 100644 themes/hugo-sustain/exampleSite/content/blog/migrate-from-jekyll.md
+ create mode 100644 themes/hugo-sustain/exampleSite/content/projects.md
+ create mode 100644 themes/hugo-sustain/exampleSite/data/projects.yml
+ create mode 100644 themes/hugo-sustain/exampleSite/static/img/profile.png
+ create mode 100644 themes/hugo-sustain/images/screenshot.png
+ create mode 100644 themes/hugo-sustain/images/tn.png
+ create mode 100644 themes/hugo-sustain/layouts/404.html
+ create mode 100644 themes/hugo-sustain/layouts/_default/list.html
+ create mode 100644 themes/hugo-sustain/layouts/_default/projects.html
+ create mode 100644 themes/hugo-sustain/layouts/_default/single.html
+ create mode 100644 themes/hugo-sustain/layouts/index.html
+ create mode 100644 themes/hugo-sustain/layouts/partials/disqus.html
+ create mode 100644 themes/hugo-sustain/layouts/partials/footer.html
+ create mode 100644 themes/hugo-sustain/layouts/partials/head.html
+ create mode 100644 themes/hugo-sustain/layouts/partials/header.html
+ create mode 100644 themes/hugo-sustain/layouts/partials/js.html
+ create mode 100644 themes/hugo-sustain/layouts/partials/social.html
+ create mode 100644 themes/hugo-sustain/static/css/main.css
+ create mode 100644 themes/hugo-sustain/static/js/docs.min.js
+ create mode 100644 themes/hugo-sustain/static/js/ie10-viewport-bug-workaround.js
+ create mode 100644 themes/hugo-sustain/static/js/main.js
+ create mode 100644 themes/hugo-sustain/theme.toml
+]0;/stor/home/jdm6743/Website_CB]0;jdm6743@educcomp01: ~/Website_CB[01;32mjdm6743@educcomp01[00m:[01;34m~/Website_CB[00m$ git add origin "[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[Kgit remote add origin  https://github.com/jdm6743/Website.git
+]0;/stor/home/jdm6743/Website_CB]0;jdm6743@educcomp01: ~/Website_CB[01;32mjdm6743@educcomp01[00m:[01;34m~/Website_CB[00m$ git push origin maste r
+Username for 'https://github.com': jdm6743
+Password for 'https://jdm6743@github.com': 
+Counting objects: 162, done.
+Delta compression using up to 16 threads.
+Compressing objects:   0% (1/139)   Compressing objects:   1% (2/139)   Compressing objects:   2% (3/139)   Compressing objects:   3% (5/139)   Compressing objects:   4% (6/139)   Compressing objects:   5% (7/139)   Compressing objects:   6% (9/139)   Compressing objects:   7% (10/139)   Compressing objects:   8% (12/139)   Compressing objects:   9% (13/139)   Compressing objects:  10% (14/139)   Compressing objects:  11% (16/139)   Compressing objects:  12% (17/139)   Compressing objects:  13% (19/139)   Compressing objects:  14% (20/139)   Compressing objects:  15% (21/139)   Compressing objects:  16% (23/139)   Compressing objects:  17% (24/139)   Compressing objects:  18% (26/139)   Compressing objects:  19% (27/139)   Compressing objects:  20% (28/139)   Compressing objects:  21% (30/139)   Compressing objects:  22% (31/139)   Compressing objects:  23% (32/139)   Compressing objects:  24% (34/139)   Compressing objects:  25% (35/139)   Compressing objects:  26% (37/139)   Compressing objects:  27% (38/139)   Compressing objects:  28% (39/139)   Compressing objects:  29% (41/139)   Compressing objects:  30% (42/139)   Compressing objects:  31% (44/139)   Compressing objects:  32% (45/139)   Compressing objects:  33% (46/139)   Compressing objects:  34% (48/139)   Compressing objects:  35% (49/139)   Compressing objects:  36% (51/139)   Compressing objects:  37% (52/139)   Compressing objects:  38% (53/139)   Compressing objects:  39% (55/139)   Compressing objects:  40% (56/139)   Compressing objects:  41% (57/139)   Compressing objects:  42% (59/139)   Compressing objects:  43% (60/139)   Compressing objects:  44% (62/139)   Compressing objects:  45% (63/139)   Compressing objects:  46% (64/139)   Compressing objects:  47% (66/139)   Compressing objects:  48% (67/139)   Compressing objects:  49% (69/139)   Compressing objects:  50% (70/139)   Compressing objects:  51% (71/139)   Compressing objects:  52% (73/139)   Compressing objects:  53% (74/139)   Compressing objects:  54% (76/139)   Compressing objects:  55% (77/139)   Compressing objects:  56% (78/139)   Compressing objects:  57% (80/139)   Compressing objects:  58% (81/139)   Compressing objects:  59% (83/139)   Compressing objects:  60% (84/139)   Compressing objects:  61% (85/139)   Compressing objects:  62% (87/139)   Compressing objects:  63% (88/139)   Compressing objects:  64% (89/139)   Compressing objects:  65% (91/139)   Compressing objects:  66% (92/139)   Compressing objects:  67% (94/139)   Compressing objects:  68% (95/139)   Compressing objects:  69% (96/139)   Compressing objects:  70% (98/139)   Compressing objects:  71% (99/139)   Compressing objects:  72% (101/139)   Compressing objects:  73% (102/139)   Compressing objects:  74% (103/139)   Compressing objects:  75% (105/139)   Compressing objects:  76% (106/139)   Compressing objects:  77% (108/139)   Compressing objects:  78% (109/139)   Compressing objects:  79% (110/139)   Compressing objects:  80% (112/139)   Compressing objects:  81% (113/139)   Compressing objects:  82% (114/139)   Compressing objects:  83% (116/139)   Compressing objects:  84% (117/139)   Compressing objects:  85% (119/139)   Compressing objects:  86% (120/139)   Compressing objects:  87% (121/139)   Compressing objects:  88% (123/139)   Compressing objects:  89% (124/139)   Compressing objects:  90% (126/139)   Compressing objects:  91% (127/139)   Compressing objects:  92% (128/139)   Compressing objects:  93% (130/139)   Compressing objects:  94% (131/139)   Compressing objects:  95% (133/139)   Compressing objects:  96% (134/139)   Compressing objects:  97% (135/139)   Compressing objects:  98% (137/139)   Compressing objects:  99% (138/139)   Compressing objects: 100% (139/139)   Compressing objects: 100% (139/139), done.
+Writing objects:   0% (1/162)   Writing objects:   1% (2/162)   Writing objects:   2% (4/162)   Writing objects:   3% (5/162)   Writing objects:   4% (7/162)   Writing objects:   5% (9/162)   Writing objects:   6% (10/162)   Writing objects:   7% (12/162)   Writing objects:   8% (13/162)   Writing objects:   9% (15/162)   Writing objects:  10% (17/162)   Writing objects:  11% (18/162)   Writing objects:  12% (20/162)   Writing objects:  14% (23/162)   Writing objects:  16% (26/162)   Writing objects:  17% (28/162)   Writing objects:  18% (30/162)   Writing objects:  19% (31/162)   Writing objects:  20% (33/162)   Writing objects:  21% (35/162)   Writing objects:  22% (36/162)   Writing objects:  23% (38/162)   Writing objects:  24% (39/162)   Writing objects:  25% (41/162)   Writing objects:  26% (43/162)   Writing objects:  27% (45/162)   Writing objects:  29% (47/162)   Writing objects:  30% (49/162)   Writing objects:  31% (51/162)   Writing objects:  32% (52/162)   Writing objects:  33% (54/162)   Writing objects:  34% (56/162)   Writing objects:  35% (57/162)   Writing objects:  36% (59/162)   Writing objects:  37% (60/162)   Writing objects:  38% (62/162)   Writing objects:  39% (64/162)   Writing objects:  40% (65/162)   Writing objects:  41% (67/162)   Writing objects:  43% (71/162)   Writing objects:  45% (74/162)   Writing objects:  46% (75/162)   Writing objects:  47% (77/162)   Writing objects:  48% (79/162)   Writing objects:  50% (81/162)   Writing objects:  51% (83/162)   Writing objects:  52% (85/162)   Writing objects:  53% (86/162)   Writing objects:  54% (88/162)   Writing objects:  55% (90/162)   Writing objects:  56% (91/162)   Writing objects:  57% (93/162)   Writing objects:  58% (94/162)   Writing objects:  59% (96/162)   Writing objects:  60% (98/162)   Writing objects:  61% (99/162)   Writing objects:  62% (101/162)   Writing objects:  63% (103/162)   Writing objects:  64% (104/162)   Writing objects:  65% (106/162)   Writing objects:  66% (107/162)   Writing objects:  67% (109/162)   Writing objects:  68% (111/162)   Writing objects:  69% (112/162)   Writing objects:  70% (114/162)   Writing objects:  71% (116/162)   Writing objects:  72% (117/162)   Writing objects:  73% (119/162)   Writing objects:  74% (120/162)   Writing objects:  75% (122/162)   Writing objects:  76% (124/162)   Writing objects:  77% (125/162)   Writing objects:  78% (127/162)   Writing objects:  79% (128/162)   Writing objects:  80% (130/162)   Writing objects:  81% (132/162)   Writing objects:  82% (133/162)   Writing objects:  83% (135/162)   Writing objects:  84% (137/162)   Writing objects:  85% (138/162)   Writing objects:  86% (140/162)   Writing objects:  87% (141/162)   Writing objects:  88% (143/162)   Writing objects:  89% (145/162)   Writing objects:  90% (146/162)   Writing objects:  91% (148/162)   Writing objects:  93% (151/162)   Writing objects:  94% (153/162)   Writing objects:  95% (154/162)   Writing objects:  96% (156/162)   Writing objects:  97% (158/162)   Writing objects:  98% (159/162)   Writing objects:  99% (161/162)   Writing objects: 100% (162/162)   Writing objects: 100% (162/162), 895.43 KiB | 12.10 MiB/s, done.
+Total 162 (delta 44), reused 0 (delta 0)
+remote: Resolving deltas:   0% (0/44)[Kremote: Resolving deltas:   2% (1/44)[Kremote: Resolving deltas:   9% (4/44)[Kremote: Resolving deltas:  40% (18/44)[Kremote: Resolving deltas:  43% (19/44)[Kremote: Resolving deltas:  56% (25/44)[Kremote: Resolving deltas:  61% (27/44)[Kremote: Resolving deltas:  65% (29/44)[Kremote: Resolving deltas:  86% (38/44)[Kremote: Resolving deltas:  90% (40/44)[Kremote: Resolving deltas: 100% (44/44)[Kremote: Resolving deltas: 100% (44/44), done.[K
+To https://github.com/jdm6743/Website.git
+ * [new branch]      master -> master
+git init
+Reinitialized existing Git repository in /stor/home/jdm6743/Website_CB/.git/
+]0;/stor/home/jdm6743/Website_CB]0;jdm6743@educcomp03: ~/Website_CB[01;32mjdm6743@educcomp03[00m:[01;34m~/Website_CB[00m$ git add.
+git: 'add.' is not a git command. See 'git --help'.
+
+The most similar command is
+	add
+]0;/stor/home/jdm6743/Website_CB]0;jdm6743@educcomp03: ~/Website_CB[01;32mjdm6743@educcomp03[00m:[01;34m~/Website_CB[00m$ git add
+Nothing specified, nothing added.
+Maybe you wanted to say 'git add .'?
+]0;/stor/home/jdm6743/Website_CB]0;jdm6743@educcomp03: ~/Website_CB[01;32mjdm6743@educcomp03[00m:[01;34m~/Website_CB[00m$ git add .

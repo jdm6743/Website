@@ -1,6 +1,6 @@
 baseurl = "/"
 languageCode = "en-US"
-title = "Portfolio"
+title = "R Portfolio"
 # Enable comments by entering your Disqus shortname
 disqusShortname = ""
 # Enable Google Analytics by entering your tracking code
@@ -11,7 +11,7 @@ theme = "hugo-sustain"
   post = "/:year/:month/:day/:slug"
 
 [params]
-  avatar = "profile.jpg"
+  avatar = "profilejm.jpg"
   author = "Jessica Martin"
   description = "Describe your website"
 

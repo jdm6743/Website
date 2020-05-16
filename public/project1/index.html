@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Jessica Martin" />
+    <meta name="description" content="Describe your website">
+    <link rel="shortcut icon" type="image/x-icon" href="../img/favicon.ico">
+    <title>Project 1: Exploratory Data Analysis by Jessica Martin</title>
+    <meta name="generator" content="Hugo 0.70.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="../css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="../"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="../blog/">BLOG</a></li>
+        
+        <li><a href="../projects/">PROJECTS</a></li>
+        
+        <li><a href="../resume.pdf">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="../project1/">Project 1: Exploratory Data Analysis by Jessica Martin</a></strong>
+          </h3>
+        </div>
+        <div class="blog-title">
+          <h4>
+          January 1, 0001
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>In the following document, two separate data sets, both of which were found from <a href="https://github.com/rfordatascience/tidytuesday" class="uri">https://github.com/rfordatascience/tidytuesday</a>, will be combined and examined.</p>
+<p>The first dataset, named “global_mortality” contains mortality data for 228 political entities (mostly independent countries) for all years between 1990-2016. In this dataset, the mortality rate from 32 distinct factors is recorded as a percentage of the total deaths for each year in each country. In the second dataset, named “lifeexp”, 241 political entities (which I will refer to as countries, for simplicity), are presented along with the life expectancy of each country for years 1950-2015.</p>
+<p>Unfortunately, I did not find any information as to how these datasets were acquired. However, it is fortunate that these datasets were created by the same author; therefore, there is a lot of consistency between the datasets, most notably of which are the variables “country” and “country code”. These datasets are so compatible because mortality rates for disease and other factors (found in the global_mortality dataset) will greatly contribute to the life expectancy for each country (found in the lifeexp dataset). It will be interesting to explore how life expectancy fluctuates between countries based upon the factors which have the highest mortality percentage. However, it is necessary to mention that neither dataset contains information on differences in healthcare systems and availability of good hospitals with modern medical technology, which will also have a huge impact on life expectancy and the mortality percentage for each factor.</p>
+<p>I picked these datasets because I have a great interest not only in healthcare and knowing which diseases/factors are the most deadly in the world, but also because it is interesting (yet tragic) to see how countries throughout the world differ so greatly in terms of health, mortality, and life expectancy.</p>
+</div>
+<div id="uploading-and-tidying" class="section level1">
+<h1>Uploading and Tidying</h1>
+<p>Because both of these datasets were found from an external source, I had to upload them to the R server, one in the form of an imported excel file, the other of which was a .csv file. I then took a glimpse at each of them in order to familiarize myself with the variables in each dataset.</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ──────────────────── tidyverse 1.3.0 ──</code></pre>
+<pre><code>## ✔ ggplot2 3.2.1     ✔ purrr   0.3.3
+## ✔ tibble  2.1.3     ✔ dplyr   0.8.3
+## ✔ tidyr   1.0.0     ✔ stringr 1.4.0
+## ✔ readr   1.3.1     ✔ forcats 0.4.0</code></pre>
+<pre><code>## ── Conflicts ─────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(readxl)
+global_mortality &lt;- read_excel(&quot;global_mortality.xlsx&quot;)
+global_mortality%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 6,156
+## Variables: 35
+## $ country                                    &lt;chr&gt; &quot;Afghanistan&quot;, &quot;Afghanista…
+## $ country_code                               &lt;chr&gt; &quot;AFG&quot;, &quot;AFG&quot;, &quot;AFG&quot;, &quot;AFG&quot;…
+## $ year                                       &lt;dbl&gt; 1990, 1991, 1992, 1993, 19…
+## $ `Cardiovascular diseases (%)`              &lt;dbl&gt; 17.61040, 17.80181, 18.386…
+## $ `Cancers (%)`                              &lt;dbl&gt; 4.025975, 4.054145, 4.1739…
+## $ `Respiratory diseases (%)`                 &lt;dbl&gt; 2.106626, 2.134176, 2.2082…
+## $ `Diabetes (%)`                             &lt;dbl&gt; 3.832555, 3.822228, 3.9001…
+## $ `Dementia (%)`                             &lt;dbl&gt; 0.5314287, 0.5324973, 0.54…
+## $ `Lower respiratory infections (%)`         &lt;dbl&gt; 10.886362, 10.356968, 10.0…
+## $ `Neonatal deaths (%)`                      &lt;dbl&gt; 9.184653, 8.938897, 8.8413…
+## $ `Diarrheal diseases (%)`                   &lt;dbl&gt; 2.497141, 2.572228, 2.7077…
+## $ `Road accidents (%)`                       &lt;dbl&gt; 3.715944, 3.729142, 3.8163…
+## $ `Liver disease (%)`                        &lt;dbl&gt; 0.8369093, 0.8455159, 0.87…
+## $ `Tuberculosis (%)`                         &lt;dbl&gt; 5.877075, 5.891704, 6.0346…
+## $ `Kidney disease (%)`                       &lt;dbl&gt; 1.680611, 1.671115, 1.7009…
+## $ `Digestive diseases (%)`                   &lt;dbl&gt; 1.058771, 1.049322, 1.0628…
+## $ `HIV/AIDS (%)`                             &lt;dbl&gt; 0.01301948, 0.01451458, 0.…
+## $ `Suicide (%)`                              &lt;dbl&gt; 0.4366105, 0.4422802, 0.45…
+## $ `Malaria (%)`                              &lt;dbl&gt; 0.4488863, 0.4550191, 0.46…
+## $ `Homicide (%)`                             &lt;dbl&gt; 1.287020, 1.290991, 1.3261…
+## $ `Nutritional deficiencies (%)`             &lt;dbl&gt; 0.3505045, 0.3432123, 0.34…
+## $ `Meningitis (%)`                           &lt;dbl&gt; 3.037603, 2.903202, 2.8406…
+## $ `Protein-energy malnutrition (%)`          &lt;dbl&gt; 0.3297599, 0.3221711, 0.32…
+## $ `Drowning (%)`                             &lt;dbl&gt; 0.9838624, 0.9545860, 0.95…
+## $ `Maternal deaths (%)`                      &lt;dbl&gt; 1.769213, 1.749264, 1.7642…
+## $ `Parkinson disease (%)`                    &lt;dbl&gt; 0.02515859, 0.02545063, 0.…
+## $ `Alcohol disorders (%)`                    &lt;dbl&gt; 0.02899828, 0.02917152, 0.…
+## $ `Intestinal infectious diseases (%)`       &lt;dbl&gt; 0.1833303, 0.1781074, 0.17…
+## $ `Drug disorders (%)`                       &lt;dbl&gt; 0.04120540, 0.04203340, 0.…
+## $ `Hepatitis (%)`                            &lt;dbl&gt; 0.1387378, 0.1350081, 0.13…
+## $ `Fire (%)`                                 &lt;dbl&gt; 0.1741567, 0.1706712, 0.17…
+## $ `Heat-related (hot and cold exposure) (%)` &lt;dbl&gt; 0.1378229, 0.1348266, 0.13…
+## $ `Natural disasters (%)`                    &lt;dbl&gt; 0.00000000, 0.79760256, 0.…
+## $ `Conflict (%)`                             &lt;dbl&gt; 0.932, 2.044, 2.408, NA, 4…
+## $ `Terrorism (%)`                            &lt;dbl&gt; 0.007, 0.040, 0.027, NA, 0…</code></pre>
+<pre class="r"><code>lifeexp&lt;-read.csv(&quot;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2018/2018-07-03/week14_global_life_expectancy.csv&quot;)
+lifeexp%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 17,894
+## Variables: 4
+## $ country         &lt;fct&gt; Afghanistan, Afghanistan, Afghanistan, Afghanistan, A…
+## $ code            &lt;fct&gt; AFG, AFG, AFG, AFG, AFG, AFG, AFG, AFG, AFG, AFG, AFG…
+## $ year            &lt;int&gt; 1950, 1951, 1952, 1953, 1954, 1955, 1956, 1957, 1958,…
+## $ life_expectancy &lt;dbl&gt; 27.537, 27.810, 28.350, 28.880, 29.399, 29.907, 30.40…</code></pre>
+<p>Both datasets appear to be tidy; however, I will untidy and re-tidy each dataset before joining them. Here, I include a glimpse of the final, “tidy” dataset–“global_mortality1” and “longlifeexp”. This is to demonstrate that after untidying and tidying the datasets, they are exactly the same as the initial datasets.</p>
+<p>For the “global_mortality” dataset, several steps were needed in order to untidy and retidy. First, to untidy the datset, I used pivot wider. I took all years (1990-2015) and combined them with each mortality factor (which came from columns 4-35). I then began to retidy. To pivot longer, I had to pivot all columns besides “country” and “country_code”. Then, I had to use “separate()”&quot; to separate each disease from the year it was associated with. Lastly, I had to pivot wider again in order to put all disease names back into their own columns, along with their values. Similar steps were followed to untidy and retidy the “lifeexp” dataset, except I did not have to use separate() and I did not have to pivot wider when re-tidying.</p>
+<pre class="r"><code>wideglobal&lt;-global_mortality%&gt;%pivot_wider(names_from=&quot;year&quot;,values_from=c(4:35))
+longglobal1&lt;-wideglobal%&gt;%pivot_longer(cols=-c(&quot;country&quot;,&quot;country_code&quot;))
+longglobal2&lt;-longglobal1%&gt;%separate(name,into=c(&quot;disease&quot;,&quot;year&quot;),sep=&quot;_&quot;)
+global_mortality1&lt;-longglobal2%&gt;%pivot_wider(names_from=&quot;disease&quot;,values_from=&quot;value&quot;)
+
+global_mortality1%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 6,156
+## Variables: 35
+## $ country                                    &lt;chr&gt; &quot;Afghanistan&quot;, &quot;Afghanista…
+## $ country_code                               &lt;chr&gt; &quot;AFG&quot;, &quot;AFG&quot;, &quot;AFG&quot;, &quot;AFG&quot;…
+## $ year                                       &lt;chr&gt; &quot;1990&quot;, &quot;1991&quot;, &quot;1992&quot;, &quot;1…
+## $ `Cardiovascular diseases (%)`              &lt;dbl&gt; 17.61040, 17.80181, 18.386…
+## $ `Cancers (%)`                              &lt;dbl&gt; 4.025975, 4.054145, 4.1739…
+## $ `Respiratory diseases (%)`                 &lt;dbl&gt; 2.106626, 2.134176, 2.2082…
+## $ `Diabetes (%)`                             &lt;dbl&gt; 3.832555, 3.822228, 3.9001…
+## $ `Dementia (%)`                             &lt;dbl&gt; 0.5314287, 0.5324973, 0.54…
+## $ `Lower respiratory infections (%)`         &lt;dbl&gt; 10.886362, 10.356968, 10.0…
+## $ `Neonatal deaths (%)`                      &lt;dbl&gt; 9.184653, 8.938897, 8.8413…
+## $ `Diarrheal diseases (%)`                   &lt;dbl&gt; 2.497141, 2.572228, 2.7077…
+## $ `Road accidents (%)`                       &lt;dbl&gt; 3.715944, 3.729142, 3.8163…
+## $ `Liver disease (%)`                        &lt;dbl&gt; 0.8369093, 0.8455159, 0.87…
+## $ `Tuberculosis (%)`                         &lt;dbl&gt; 5.877075, 5.891704, 6.0346…
+## $ `Kidney disease (%)`                       &lt;dbl&gt; 1.680611, 1.671115, 1.7009…
+## $ `Digestive diseases (%)`                   &lt;dbl&gt; 1.058771, 1.049322, 1.0628…
+## $ `HIV/AIDS (%)`                             &lt;dbl&gt; 0.01301948, 0.01451458, 0.…
+## $ `Suicide (%)`                              &lt;dbl&gt; 0.4366105, 0.4422802, 0.45…
+## $ `Malaria (%)`                              &lt;dbl&gt; 0.4488863, 0.4550191, 0.46…
+## $ `Homicide (%)`                             &lt;dbl&gt; 1.287020, 1.290991, 1.3261…
+## $ `Nutritional deficiencies (%)`             &lt;dbl&gt; 0.3505045, 0.3432123, 0.34…
+## $ `Meningitis (%)`                           &lt;dbl&gt; 3.037603, 2.903202, 2.8406…
+## $ `Protein-energy malnutrition (%)`          &lt;dbl&gt; 0.3297599, 0.3221711, 0.32…
+## $ `Drowning (%)`                             &lt;dbl&gt; 0.9838624, 0.9545860, 0.95…
+## $ `Maternal deaths (%)`                      &lt;dbl&gt; 1.769213, 1.749264, 1.7642…
+## $ `Parkinson disease (%)`                    &lt;dbl&gt; 0.02515859, 0.02545063, 0.…
+## $ `Alcohol disorders (%)`                    &lt;dbl&gt; 0.02899828, 0.02917152, 0.…
+## $ `Intestinal infectious diseases (%)`       &lt;dbl&gt; 0.1833303, 0.1781074, 0.17…
+## $ `Drug disorders (%)`                       &lt;dbl&gt; 0.04120540, 0.04203340, 0.…
+## $ `Hepatitis (%)`                            &lt;dbl&gt; 0.1387378, 0.1350081, 0.13…
+## $ `Fire (%)`                                 &lt;dbl&gt; 0.1741567, 0.1706712, 0.17…
+## $ `Heat-related (hot and cold exposure) (%)` &lt;dbl&gt; 0.1378229, 0.1348266, 0.13…
+## $ `Natural disasters (%)`                    &lt;dbl&gt; 0.00000000, 0.79760256, 0.…
+## $ `Conflict (%)`                             &lt;dbl&gt; 0.932, 2.044, 2.408, NA, 4…
+## $ `Terrorism (%)`                            &lt;dbl&gt; 0.007, 0.040, 0.027, NA, 0…</code></pre>
+<pre class="r"><code>widelife&lt;-lifeexp%&gt;%pivot_wider(names_from=&quot;year&quot;,values_from=&quot;life_expectancy&quot;)
+longlifeexp&lt;-widelife%&gt;%pivot_longer(cols=-c(&quot;country&quot;,&quot;code&quot;),names_to=&quot;year&quot;,values_to=&quot;life_expectancy&quot;)
+
+longlifeexp%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 73,987
+## Variables: 4
+## $ country         &lt;fct&gt; Afghanistan, Afghanistan, Afghanistan, Afghanistan, A…
+## $ code            &lt;fct&gt; AFG, AFG, AFG, AFG, AFG, AFG, AFG, AFG, AFG, AFG, AFG…
+## $ year            &lt;chr&gt; &quot;1950&quot;, &quot;1951&quot;, &quot;1952&quot;, &quot;1953&quot;, &quot;1954&quot;, &quot;1955&quot;, &quot;1956…
+## $ life_expectancy &lt;dbl&gt; 27.537, 27.810, 28.350, 28.880, 29.399, 29.907, 30.40…</code></pre>
+</div>
+<div id="joining" class="section level1">
+<h1>Joining</h1>
+<p>The next step is to join the datasets into one and remove the NAs. I used a full join for this because I want to keep as much information as I can from each data set; by using full_join, no rows of data will be dropped. However, there will inevitably be a lot of “NA” observations from the lifeexp dataset because it includes data for 40 previous years than the global_mortality dataset. Thus, the final joined dataset dropped 14,731 rows from the initially joined dataset. This seems like a significant loss of data; however, it just means that the joined dataset focuses solely on years 1990-2015, which is still relevant for this project.</p>
+<pre class="r"><code>joined&lt;-full_join(lifeexp,global_mortality)</code></pre>
+<pre><code>## Joining, by = c(&quot;country&quot;, &quot;year&quot;)</code></pre>
+<pre><code>## Warning: Column `country` joining factor and character vector, coercing into
+## character vector</code></pre>
+<pre class="r"><code>noNA&lt;-joined%&gt;%na.omit()
+final_joined&lt;-noNA%&gt;%select(-&quot;country_code&quot;)
+final_joined%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 4,275
+## Variables: 36
+## $ country                                    &lt;chr&gt; &quot;Afghanistan&quot;, &quot;Afghanista…
+## $ code                                       &lt;fct&gt; AFG, AFG, AFG, AFG, AFG, A…
+## $ year                                       &lt;dbl&gt; 1990, 1991, 1992, 1994, 19…
+## $ life_expectancy                            &lt;dbl&gt; 49.856, 50.627, 51.331, 52…
+## $ `Cardiovascular diseases (%)`              &lt;dbl&gt; 17.61040, 17.80181, 18.386…
+## $ `Cancers (%)`                              &lt;dbl&gt; 4.025975, 4.054145, 4.1739…
+## $ `Respiratory diseases (%)`                 &lt;dbl&gt; 2.106626, 2.134176, 2.2082…
+## $ `Diabetes (%)`                             &lt;dbl&gt; 3.832555, 3.822228, 3.9001…
+## $ `Dementia (%)`                             &lt;dbl&gt; 0.5314287, 0.5324973, 0.54…
+## $ `Lower respiratory infections (%)`         &lt;dbl&gt; 10.886362, 10.356968, 10.0…
+## $ `Neonatal deaths (%)`                      &lt;dbl&gt; 9.184653, 8.938897, 8.8413…
+## $ `Diarrheal diseases (%)`                   &lt;dbl&gt; 2.4971413, 2.5722281, 2.70…
+## $ `Road accidents (%)`                       &lt;dbl&gt; 3.715944, 3.729142, 3.8163…
+## $ `Liver disease (%)`                        &lt;dbl&gt; 0.8369093, 0.8455159, 0.87…
+## $ `Tuberculosis (%)`                         &lt;dbl&gt; 5.877075, 5.891704, 6.0346…
+## $ `Kidney disease (%)`                       &lt;dbl&gt; 1.680611, 1.671115, 1.7009…
+## $ `Digestive diseases (%)`                   &lt;dbl&gt; 1.058771, 1.049322, 1.0628…
+## $ `HIV/AIDS (%)`                             &lt;dbl&gt; 0.013019479, 0.014514577, …
+## $ `Suicide (%)`                              &lt;dbl&gt; 0.4366105, 0.4422802, 0.45…
+## $ `Malaria (%)`                              &lt;dbl&gt; 0.4488863, 0.4550191, 0.46…
+## $ `Homicide (%)`                             &lt;dbl&gt; 1.2870199, 1.2909906, 1.32…
+## $ `Nutritional deficiencies (%)`             &lt;dbl&gt; 0.3505045, 0.3432123, 0.34…
+## $ `Meningitis (%)`                           &lt;dbl&gt; 3.0376030, 2.9032020, 2.84…
+## $ `Protein-energy malnutrition (%)`          &lt;dbl&gt; 0.3297599, 0.3221711, 0.32…
+## $ `Drowning (%)`                             &lt;dbl&gt; 0.9838624, 0.9545860, 0.95…
+## $ `Maternal deaths (%)`                      &lt;dbl&gt; 1.7692132, 1.7492640, 1.76…
+## $ `Parkinson disease (%)`                    &lt;dbl&gt; 0.02515859, 0.02545063, 0.…
+## $ `Alcohol disorders (%)`                    &lt;dbl&gt; 0.02899828, 0.02917152, 0.…
+## $ `Intestinal infectious diseases (%)`       &lt;dbl&gt; 0.183330287, 0.178107373, …
+## $ `Drug disorders (%)`                       &lt;dbl&gt; 0.04120540, 0.04203340, 0.…
+## $ `Hepatitis (%)`                            &lt;dbl&gt; 0.1387378, 0.1350081, 0.13…
+## $ `Fire (%)`                                 &lt;dbl&gt; 0.1741567, 0.1706712, 0.17…
+## $ `Heat-related (hot and cold exposure) (%)` &lt;dbl&gt; 0.13782289, 0.13482663, 0.…
+## $ `Natural disasters (%)`                    &lt;dbl&gt; 0.00000000, 0.79760256, 0.…
+## $ `Conflict (%)`                             &lt;dbl&gt; 0.932, 2.044, 2.408, 4.296…
+## $ `Terrorism (%)`                            &lt;dbl&gt; 0.007, 0.040, 0.027, 0.010…</code></pre>
+<pre class="r"><code>nrow(joined)-nrow(final_joined)</code></pre>
+<pre><code>## [1] 14731</code></pre>
+</div>
+<div id="wrangling" class="section level1">
+<h1>Wrangling</h1>
+<p>In this section, I will use all dplyr functions to explore and summarize statistics in my newly joined dataset.</p>
+<div id="filter-select-arrange" class="section level3">
+<h3>Filter, Select, Arrange</h3>
+<pre class="r"><code>final_joined%&gt;%filter(year==max(year)|year==min(year))%&gt;%select(1,3,4)%&gt;%arrange(life_expectancy)%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 342
+## Variables: 3
+## $ country         &lt;chr&gt; &quot;Rwanda&quot;, &quot;Sierra Leone&quot;, &quot;Angola&quot;, &quot;Mozambique&quot;, &quot;So…
+## $ year            &lt;dbl&gt; 1990, 1990, 1990, 1990, 1990, 1990, 1990, 1990, 1990,…
+## $ life_expectancy &lt;dbl&gt; 34.217, 37.348, 41.696, 42.915, 43.525, 43.540, 45.00…</code></pre>
+<p>This code is useful for observing the life expectancy for each country in the first year of the dataset and for the last year of the dataset and lists the life expectancies from least to greatest.</p>
+</div>
+<div id="mutate" class="section level3">
+<h3>Mutate</h3>
+<pre class="r"><code>mutated&lt;-final_joined%&gt;%group_by(country)%&gt;%mutate(meanlifeexp=mean(life_expectancy,na.rm=T))%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 4,275
+## Variables: 37
+## Groups: country [171]
+## $ country                                    &lt;chr&gt; &quot;Afghanistan&quot;, &quot;Afghanista…
+## $ code                                       &lt;fct&gt; AFG, AFG, AFG, AFG, AFG, A…
+## $ year                                       &lt;dbl&gt; 1990, 1991, 1992, 1994, 19…
+## $ life_expectancy                            &lt;dbl&gt; 49.856, 50.627, 51.331, 52…
+## $ `Cardiovascular diseases (%)`              &lt;dbl&gt; 17.61040, 17.80181, 18.386…
+## $ `Cancers (%)`                              &lt;dbl&gt; 4.025975, 4.054145, 4.1739…
+## $ `Respiratory diseases (%)`                 &lt;dbl&gt; 2.106626, 2.134176, 2.2082…
+## $ `Diabetes (%)`                             &lt;dbl&gt; 3.832555, 3.822228, 3.9001…
+## $ `Dementia (%)`                             &lt;dbl&gt; 0.5314287, 0.5324973, 0.54…
+## $ `Lower respiratory infections (%)`         &lt;dbl&gt; 10.886362, 10.356968, 10.0…
+## $ `Neonatal deaths (%)`                      &lt;dbl&gt; 9.184653, 8.938897, 8.8413…
+## $ `Diarrheal diseases (%)`                   &lt;dbl&gt; 2.4971413, 2.5722281, 2.70…
+## $ `Road accidents (%)`                       &lt;dbl&gt; 3.715944, 3.729142, 3.8163…
+## $ `Liver disease (%)`                        &lt;dbl&gt; 0.8369093, 0.8455159, 0.87…
+## $ `Tuberculosis (%)`                         &lt;dbl&gt; 5.877075, 5.891704, 6.0346…
+## $ `Kidney disease (%)`                       &lt;dbl&gt; 1.680611, 1.671115, 1.7009…
+## $ `Digestive diseases (%)`                   &lt;dbl&gt; 1.058771, 1.049322, 1.0628…
+## $ `HIV/AIDS (%)`                             &lt;dbl&gt; 0.013019479, 0.014514577, …
+## $ `Suicide (%)`                              &lt;dbl&gt; 0.4366105, 0.4422802, 0.45…
+## $ `Malaria (%)`                              &lt;dbl&gt; 0.4488863, 0.4550191, 0.46…
+## $ `Homicide (%)`                             &lt;dbl&gt; 1.2870199, 1.2909906, 1.32…
+## $ `Nutritional deficiencies (%)`             &lt;dbl&gt; 0.3505045, 0.3432123, 0.34…
+## $ `Meningitis (%)`                           &lt;dbl&gt; 3.0376030, 2.9032020, 2.84…
+## $ `Protein-energy malnutrition (%)`          &lt;dbl&gt; 0.3297599, 0.3221711, 0.32…
+## $ `Drowning (%)`                             &lt;dbl&gt; 0.9838624, 0.9545860, 0.95…
+## $ `Maternal deaths (%)`                      &lt;dbl&gt; 1.7692132, 1.7492640, 1.76…
+## $ `Parkinson disease (%)`                    &lt;dbl&gt; 0.02515859, 0.02545063, 0.…
+## $ `Alcohol disorders (%)`                    &lt;dbl&gt; 0.02899828, 0.02917152, 0.…
+## $ `Intestinal infectious diseases (%)`       &lt;dbl&gt; 0.183330287, 0.178107373, …
+## $ `Drug disorders (%)`                       &lt;dbl&gt; 0.04120540, 0.04203340, 0.…
+## $ `Hepatitis (%)`                            &lt;dbl&gt; 0.1387378, 0.1350081, 0.13…
+## $ `Fire (%)`                                 &lt;dbl&gt; 0.1741567, 0.1706712, 0.17…
+## $ `Heat-related (hot and cold exposure) (%)` &lt;dbl&gt; 0.13782289, 0.13482663, 0.…
+## $ `Natural disasters (%)`                    &lt;dbl&gt; 0.00000000, 0.79760256, 0.…
+## $ `Conflict (%)`                             &lt;dbl&gt; 0.932, 2.044, 2.408, 4.296…
+## $ `Terrorism (%)`                            &lt;dbl&gt; 0.007, 0.040, 0.027, 0.010…
+## $ meanlifeexp                                &lt;dbl&gt; 57.18436, 57.18436, 57.184…</code></pre>
+<p>This code creates a new column in the dataset which presents the total mean life expectancy for each country in combined years 1990-2015.</p>
+</div>
+<div id="summarize-and-group_by" class="section level3">
+<h3>Summarize and Group_by</h3>
+<p>For the following ten summarizing statistics, I used pivot_longer on the final_joined dataset and named it “longdata”.</p>
+<p>Finding the mean mortality percentage of cardiovascular disease in years 1990-2015 for each country:</p>
+<pre class="r"><code>longdata&lt;-final_joined%&gt;%pivot_longer(cols=c(5:36),names_to=&quot;diseases&quot;,values_to=&quot;values&quot;)
+longdata%&gt;%group_by(country)%&gt;%filter(diseases==&quot;Cardiovascular diseases (%)&quot;)%&gt;%summarize(meanmortality=mean(values))%&gt;%arrange(desc(meanmortality))%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 171
+## Variables: 2
+## $ country       &lt;chr&gt; &quot;Georgia&quot;, &quot;Bulgaria&quot;, &quot;Ukraine&quot;, &quot;Belarus&quot;, &quot;Macedonia…
+## $ meanmortality &lt;dbl&gt; 64.11682, 64.08298, 61.93131, 59.50497, 59.33890, 58.44…</code></pre>
+<p>Mean mortality percentage of cancers in all countries from years 1990-2015:</p>
+<pre class="r"><code>longdata%&gt;%group_by(country)%&gt;%filter(diseases==&quot;Cancers (%)&quot;)%&gt;%summarize(meanmortality=mean(values))%&gt;%arrange(desc(meanmortality))%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 171
+## Variables: 2
+## $ country       &lt;chr&gt; &quot;Canada&quot;, &quot;Netherlands&quot;, &quot;Japan&quot;, &quot;France&quot;, &quot;Denmark&quot;, …
+## $ meanmortality &lt;dbl&gt; 30.20443, 30.14955, 29.68774, 29.42927, 28.60376, 28.48…</code></pre>
+<p>Mean mortality percentage of respiratory diseases in all countries from years 1990-2015:</p>
+<pre class="r"><code>longdata%&gt;%group_by(country)%&gt;%filter(diseases==&quot;Respiratory diseases (%)&quot;)%&gt;%summarize(meanmortality=mean(values))%&gt;%arrange(desc(meanmortality))%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 171
+## Variables: 2
+## $ country       &lt;chr&gt; &quot;China&quot;, &quot;Papua New Guinea&quot;, &quot;North Korea&quot;, &quot;India&quot;, &quot;N…
+## $ meanmortality &lt;dbl&gt; 13.125347, 12.746989, 11.035083, 10.136311, 9.177720, 8…</code></pre>
+<p>Mean mortality percentage of diabetes in all countries from years 1990-2015:</p>
+<pre class="r"><code>longdata%&gt;%group_by(country)%&gt;%filter(diseases==&quot;Diabetes (%)&quot;)%&gt;%summarize(meanmortality=mean(values))%&gt;%arrange(desc(meanmortality))%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 171
+## Variables: 2
+## $ country       &lt;chr&gt; &quot;Fiji&quot;, &quot;Bahrain&quot;, &quot;Trinidad and Tobago&quot;, &quot;Mauritius&quot;, …
+## $ meanmortality &lt;dbl&gt; 25.816062, 18.272696, 18.109252, 17.719682, 16.196402, …</code></pre>
+<p>Mean US mortality percentage of cardiovascular disease from years 1990-2015:</p>
+<pre class="r"><code>longdata%&gt;%filter(country==&quot;United States&quot; &amp; diseases==&quot;Cardiovascular diseases (%)&quot;)%&gt;%summarize(meanUSmortality=mean(values))</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   meanUSmortality
+##             &lt;dbl&gt;
+## 1            36.3</code></pre>
+<p>Mean US mortality percentage of cancer from years 1990-2015:</p>
+<pre class="r"><code>longdata%&gt;%filter(country==&quot;United States&quot; &amp; diseases==&quot;Cancers (%)&quot;)%&gt;%summarize(meanUSmortality=mean(values))</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   meanUSmortality
+##             &lt;dbl&gt;
+## 1            24.2</code></pre>
+<p>Mean US mortality percentage of respiratory diseases from years 1990-2015:</p>
+<pre class="r"><code>longdata%&gt;%filter(country==&quot;United States&quot; &amp; diseases==&quot;Respiratory diseases (%)&quot;)%&gt;%summarize(meanUSmortality=mean(values))</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   meanUSmortality
+##             &lt;dbl&gt;
+## 1            6.10</code></pre>
+<p>Mean US mortality percentage of diabetes from years 1990-2015:</p>
+<pre class="r"><code>longdata%&gt;%filter(country==&quot;United States&quot; &amp; diseases==&quot;Diabetes (%)&quot;)%&gt;%summarize(meanUSmortality=mean(values))</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   meanUSmortality
+##             &lt;dbl&gt;
+## 1            6.51</code></pre>
+<p>The standard deviation of cardiovascular diseases in all countries from years 1990-2015:</p>
+<pre class="r"><code>longdata%&gt;%group_by(country)%&gt;%filter(diseases==&quot;Cardiovascular diseases (%)&quot;)%&gt;%summarize(sdmortality=sd(values))%&gt;%arrange(desc(sdmortality))%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 171
+## Variables: 2
+## $ country     &lt;chr&gt; &quot;Syria&quot;, &quot;Bangladesh&quot;, &quot;Albania&quot;, &quot;North Korea&quot;, &quot;Mauriti…
+## $ sdmortality &lt;dbl&gt; 8.164897, 7.603258, 6.940401, 6.935442, 6.468381, 6.21612…</code></pre>
+<p>The standard deviation of diarrheal diseases in all countries from years 1990-2015:</p>
+<pre class="r"><code>longdata%&gt;%group_by(country)%&gt;%filter(diseases==&quot;Diarrheal diseases (%)&quot;)%&gt;%summarize(sdmortality=sd(values))%&gt;%arrange(desc(sdmortality))%&gt;%glimpse()</code></pre>
+<pre><code>## Observations: 171
+## Variables: 2
+## $ country     &lt;chr&gt; &quot;Angola&quot;, &quot;Mauritania&quot;, &quot;Nicaragua&quot;, &quot;Nepal&quot;, &quot;Swaziland&quot;…
+## $ sdmortality &lt;dbl&gt; 5.922003, 4.792131, 4.331496, 4.251117, 3.613355, 3.60049…</code></pre>
+<p>The first four summary statistic codes explore the mean mortality prevalence of cardiovascular disease, cancers, respiratory diseases, and diabetes in all countries and ranks them from highest mortality percentage to lowest. This is a useful statistic because for each specified disease, we can see where the mortality prevalence of that disease is the highest. The next four summary statistic codes explore the mean mortality prevalence of the same four diseases in the United States. These statistics allow for relative comparison between the country that we are most familiar with and the other countries of the world. These statistics revealed unexpected results. For example, it is commonly thought that the US has extremely high mortality rates due to cardiovascular disease. However, upon comparing the US cardiovascular disease mortality with that of Georgia (the country with the highest mean mortality from cardiovascular disease), the US prevalence does not seem nearly as high.</p>
+<p>The last two summary statistic codes explore the standard deviations of cardiovascular diseases and diarrheal diseases in years 1990-2015 for all countries, and ranks the standard deviations from high to low. I chose to examine the standard deviation of cardiovascular disease because it has the highest overall mortality in the world. I chose diarrheal diseases because it is more common in third-world countries (countries with low life expectancy); by summarizing the standard deviation, it can be determined which countries have experienced the most fluctuation in mortality prevalence for each disease.</p>
+</div>
+</div>
+<div id="visualization" class="section level1">
+<h1>Visualization</h1>
+<div id="correlation-heat-map" class="section level3">
+<h3>Correlation Heat Map</h3>
+<pre class="r"><code>numeric&lt;-final_joined%&gt;%select(4:15)
+cormap&lt;-round(cor(numeric),2)
+library(reshape2)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;reshape2&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:tidyr&#39;:
+## 
+##     smiths</code></pre>
+<pre class="r"><code>melted_cormap&lt;-melt(cormap)
+head(melted_cormap)</code></pre>
+<pre><code>##                          Var1            Var2 value
+## 1             life_expectancy life_expectancy  1.00
+## 2 Cardiovascular diseases (%) life_expectancy  0.70
+## 3                 Cancers (%) life_expectancy  0.85
+## 4    Respiratory diseases (%) life_expectancy  0.42
+## 5                Diabetes (%) life_expectancy  0.40
+## 6                Dementia (%) life_expectancy  0.80</code></pre>
+<pre class="r"><code>ggplot(data=melted_cormap, aes(x=Var1,y=Var2,fill=value))+geom_tile()+ggtitle(&quot;Correlation Map of Numeric Variables&quot;)+xlab(&quot;Variable 1&quot;)+ylab(&quot;Variable 2&quot;)+theme(axis.text.x = element_text(angle=90))</code></pre>
+<p><img src="../project1_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+</div>
+<div id="ggplots" class="section level3">
+<h3>GGPlots</h3>
+<p>In order to graph with three variables (disease, prevalence, and country), it was necessary for me to pivot the dataset longer. Because there are so many different countries in the dataset, I decided to use only 10 total–the five countries with highest life expectancies and the five countries with lowest life expectancy. Additionally, due to the large number of mortality factors in this dataset, I removed all factors which had lower than 8% mortality rate in order to prevent a cluttered graph.</p>
+<pre class="r"><code>longdata&lt;-final_joined%&gt;%pivot_longer(cols=c(5:36),names_to=&quot;diseases&quot;,values_to=&quot;values&quot;)
+highnlow&lt;-longdata%&gt;%group_by(country)%&gt;%filter(year==2015 &amp; values&gt;8)%&gt;%arrange(desc(life_expectancy))
+topbottom5&lt;-highnlow%&gt;%filter(life_expectancy&gt;82.8 | life_expectancy&lt;54)
+ggplot(data=topbottom5, aes(x=diseases,y=values,color=country))+geom_point()+theme(axis.text.x = element_text(angle=90))+ggtitle(&quot;Percent Mortality According to Disease&quot;)+xlab(&quot;Disease&quot;)+ylab(&quot;Mortality (%)&quot;)</code></pre>
+<p><img src="../project1_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p>In the graph above, the five countries with the highest life expectancy in the year 2015 was plotted along with the five countries with the lowest life expectancy in the year 2015. Because I only selected values which are higher than 8% mortality, not all countries are represented for each disease. However, there are still some interesting findings; for example, Lesotho’s mortality prevalence for HIV/AIDS is significantly higher than other countries who have similar life expectancy values. Additionally, there is an exactly even split between the top five and bottom five countries in regards to cardiovascular disease. This will be explored further in subsequent graphs.</p>
+<pre class="r"><code>highnlow$country &lt;- ifelse(highnlow$life_expectancy&lt;median(highnlow$life_expectancy),&quot;Low Life Expectancy&quot;,&quot;High Life Expectancy&quot;)
+ggplot(data=highnlow, aes(x=country,fill=diseases))+geom_bar(position=&quot;fill&quot;)+theme(axis.text.x = element_text(angle=90))+ggtitle(&quot;Comparing Top- and Bottom-Half Countries&quot;)+ylab(&quot;Percent Mortality&quot;)+scale_y_continuous(breaks=seq(0, 1, .1))</code></pre>
+<p><img src="../project1_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<p>The plot above places all countries above the median life expectancy in one group (High Life Expectancy) and those below the median life expectancy in another group (Low Life Expectancy). It then shows the relative mortality prevalence in each of the selected diseases. This graph is interesting because it shows that many diseases are much more prevalent in the low life expectancy countries–such as neonatal deaths and lower respiratory infections. Conversely, it shows that the mortality prevalence of cardiovascular disease (the top color on the bars) is much higher in the high life expectancy countries.</p>
+<pre class="r"><code>highnlow1&lt;-longdata%&gt;%group_by(country)%&gt;%filter(year==2015 &amp; values&gt;3)%&gt;%arrange(desc(life_expectancy))
+JR&lt;-highnlow1%&gt;%filter(country==&quot;Japan&quot;|country==&quot;Rwanda&quot; &amp; values&gt;3)
+ggplot(data=JR, aes(x=country, y=values, fill=diseases))+geom_bar(stat=&quot;summary&quot;,fun.y=&quot;mean&quot;)+theme_dark()+ggtitle(&quot;Comparing Japan and Rwanda&quot;)+ylab(&quot;Percent Mortality&quot;)</code></pre>
+<p><img src="../project1_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<p>The graph above compares two specific countries–one with the highest life expectancy (Japan) and one with the lowest life expectancy (Rwanda). It is important to note that neither country’s bar reaches 100%; this is because I excluded all mortality factors that had values lower than 8%. Just as the previous graph, this one shows relative mortality prevalence of disease in a high life expectancy country along with a low life expectancy country. This graph is relevant because the two bars look nothing alike, meaning that each respective countries faces mortality from completely different factors. Most of Japan’s mortality comes from cancers, cardiovascular disease, and dementia, and suffers insignificantly from all other factors (which is why its bar is closer to 100%). Conversely, Rwanda suffers mortality much more evenly from all the diseases/factors listed (which is why a larger percentage of data is missing).</p>
+</div>
+</div>
+<div id="dimensionality-reduction" class="section level1">
+<h1>Dimensionality Reduction</h1>
+<p>For clustering, I wanted to examine the relationship between cardiovascular disease (a high mortality factor in all countries) and life expectancy. I chose cardiovascular disease from all other mortality factors because of the interesting implications found in the plots above. First, I first had to access the “final_joined” dataset and change the inconvenient column name “Cardiovascular diseases (%)” to “cardio_diseases” because R is not able to run column names with spaces in them, apparently. After this, I used the silhouette method to determine how many clusters would be sufficient for this data. The highest silhouette width was 2. Typically, I would want more clusters; however, I want to continue making the distinction between low life expectancy countries and high life expectancy countries, as I did in the plots above.</p>
+<pre class="r"><code>names(final_joined)[5]&lt;-&quot;cardio_disease&quot;
+names(final_joined)</code></pre>
+<pre><code>##  [1] &quot;country&quot;                                 
+##  [2] &quot;code&quot;                                    
+##  [3] &quot;year&quot;                                    
+##  [4] &quot;life_expectancy&quot;                         
+##  [5] &quot;cardio_disease&quot;                          
+##  [6] &quot;Cancers (%)&quot;                             
+##  [7] &quot;Respiratory diseases (%)&quot;                
+##  [8] &quot;Diabetes (%)&quot;                            
+##  [9] &quot;Dementia (%)&quot;                            
+## [10] &quot;Lower respiratory infections (%)&quot;        
+## [11] &quot;Neonatal deaths (%)&quot;                     
+## [12] &quot;Diarrheal diseases (%)&quot;                  
+## [13] &quot;Road accidents (%)&quot;                      
+## [14] &quot;Liver disease (%)&quot;                       
+## [15] &quot;Tuberculosis (%)&quot;                        
+## [16] &quot;Kidney disease (%)&quot;                      
+## [17] &quot;Digestive diseases (%)&quot;                  
+## [18] &quot;HIV/AIDS (%)&quot;                            
+## [19] &quot;Suicide (%)&quot;                             
+## [20] &quot;Malaria (%)&quot;                             
+## [21] &quot;Homicide (%)&quot;                            
+## [22] &quot;Nutritional deficiencies (%)&quot;            
+## [23] &quot;Meningitis (%)&quot;                          
+## [24] &quot;Protein-energy malnutrition (%)&quot;         
+## [25] &quot;Drowning (%)&quot;                            
+## [26] &quot;Maternal deaths (%)&quot;                     
+## [27] &quot;Parkinson disease (%)&quot;                   
+## [28] &quot;Alcohol disorders (%)&quot;                   
+## [29] &quot;Intestinal infectious diseases (%)&quot;      
+## [30] &quot;Drug disorders (%)&quot;                      
+## [31] &quot;Hepatitis (%)&quot;                           
+## [32] &quot;Fire (%)&quot;                                
+## [33] &quot;Heat-related (hot and cold exposure) (%)&quot;
+## [34] &quot;Natural disasters (%)&quot;                   
+## [35] &quot;Conflict (%)&quot;                            
+## [36] &quot;Terrorism (%)&quot;</code></pre>
+<pre class="r"><code>library(cluster)
+clust_dat&lt;-final_joined%&gt;%filter(year==2015)%&gt;%select(cardio_disease,life_expectancy)
+sil_width&lt;-vector()
+for(i in 2:10){
+  kms &lt;- kmeans(clust_dat,centers=i)
+  sil &lt;- silhouette(kms$cluster,dist(clust_dat))
+  sil_width[i]&lt;-mean(sil[,3]) 
+}
+ggplot()+geom_line(aes(x=1:10,y=sil_width))+scale_x_continuous(name=&quot;k&quot;,breaks=1:10)</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_path).</code></pre>
+<p><img src="../project1_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+<pre class="r"><code>kmeans1&lt;-clust_dat%&gt;%kmeans(2)
+kmeans1</code></pre>
+<pre><code>## K-means clustering with 2 clusters of sizes 55, 116
+## 
+## Cluster means:
+##   cardio_disease life_expectancy
+## 1       15.67653        62.10231
+## 2       37.27888        75.86257
+## 
+## Clustering vector:
+##   [1] 1 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 1 1 2 1 1 2 2 2 1 1 1 1 2 1 1 2 2 2 1 1 2
+##  [38] 2 2 2 2 1 2 1 2 2 2 2 1 1 2 1 2 2 2 1 1 2 2 1 2 2 1 1 1 2 1 2 2 2 2 2 2 2
+##  [75] 2 2 2 2 2 2 2 1 2 2 1 2 2 1 1 2 2 2 2 1 1 2 2 1 2 1 2 2 2 2 2 1 1 1 2 2 2
+## [112] 2 1 1 2 2 2 2 2 1 2 1 2 2 2 2 2 2 1 2 1 2 1 2 2 2 1 1 2 1 2 2 2 2 1 2 2 2
+## [149] 2 2 1 1 1 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 1 1 1
+## 
+## Within cluster sum of squares by cluster:
+## [1]  3208.807 14033.572
+##  (between_SS / total_SS =  58.7 %)
+## 
+## Available components:
+## 
+## [1] &quot;cluster&quot;      &quot;centers&quot;      &quot;totss&quot;        &quot;withinss&quot;     &quot;tot.withinss&quot;
+## [6] &quot;betweenss&quot;    &quot;size&quot;         &quot;iter&quot;         &quot;ifault&quot;</code></pre>
+<pre class="r"><code>kmeans1$size</code></pre>
+<pre><code>## [1]  55 116</code></pre>
+<pre class="r"><code>kmeans1$centers</code></pre>
+<pre><code>##   cardio_disease life_expectancy
+## 1       15.67653        62.10231
+## 2       37.27888        75.86257</code></pre>
+<pre class="r"><code>kmeans1$cluster</code></pre>
+<pre><code>##   [1] 1 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 1 1 2 1 1 2 2 2 1 1 1 1 2 1 1 2 2 2 1 1 2
+##  [38] 2 2 2 2 1 2 1 2 2 2 2 1 1 2 1 2 2 2 1 1 2 2 1 2 2 1 1 1 2 1 2 2 2 2 2 2 2
+##  [75] 2 2 2 2 2 2 2 1 2 2 1 2 2 1 1 2 2 2 2 1 1 2 2 1 2 1 2 2 2 2 2 1 1 1 2 2 2
+## [112] 2 1 1 2 2 2 2 2 1 2 1 2 2 2 2 2 2 1 2 1 2 1 2 2 2 1 1 2 1 2 2 2 2 1 2 2 2
+## [149] 2 2 1 1 1 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 1 1 1</code></pre>
+<pre class="r"><code>kmeans1$cluster&lt;-as.factor(kmeans1$cluster)
+clust_dat&lt;-as.data.frame(clust_dat)
+kmeansclust &lt;- clust_dat %&gt;% mutate(cluster=kmeans1$cluster)
+ggplot(data=kmeansclust,(aes(x=life_expectancy, y=cardio_disease, color=cluster))) + geom_point()+ggtitle(&quot;K-Means Clustering: Cardiovascular Disease vs Life Expectancy&quot;)+xlab(&quot;Life Expectancy&quot;)+ylab(&quot;Prevalence of Cardiovascular Disease&quot;)</code></pre>
+<p><img src="../project1_files/figure-html/unnamed-chunk-20-2.png" width="672" /></p>
+<p>As can be deduced from the graph above, a high mortality rate for cardiovascular disease is mostly associated with countries who have higher life expectancies (this is the blue cluster). The opposite is also true: low percent mortality in regards to cardiovascular disease is associated with countries who have low life expectancies (this is the red cluster). Ultimately, this makes sense because the countries who have low life expectancies suffer a greater overall mortality percentage to a variety of different factors; this can be observed in the bar charts above. For countries who have high life expectancy, there are a smaller number of mortality factors which significantly affect life expectancy. This alludes to the healthcare quality that exists in low life expectancy countries and high life expectancy countries. In low life expectancy countries, there are many more factors that can cause mortality, and at higher percentages, than in a high life expectancy country. This conclusion supports the cluster graph above.</p>
+</div>
+
+              <hr>
+              <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div>
+            </div>
+          </div>
+          <hr>
+        <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+        </div>
+      </div>
+      
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="../js/docs.min.js"></script>
+<script src="../js/main.js"></script>
+
+<script src="../js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>

@@ -11,4 +11,4 @@ Projects
 
 - [Exploratory Data Analysis with Tidyverse Tools](/project1/)
 
-- [Modeling, Testing, and Classification](/CompBio-Project-2.pdf)
+- [Modeling, Testing, and Classification](/project2/)

@@ -1,0 +1,287 @@
+---
+title: "Modeling, Testing, and Classification"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Introduction
+This dataset, "heart", was found on kaggle.com. The data was collected in a hospital from 303 willing participants; the goal was to find possible trends in order to predict certain cardiovascular events or find any clear indications of heart health. It originially featured a set of 14 attributes that play a role in heart disease. Some of these variables were removed and some were renamed in order to create a dataset that is readily usable for this project. The remaining eight variables are as follows: "age", measured in years; "sex", with 1 representing male and 0 female; "chest.pain", measured from 0 (absence of pain) to 3 (intense pain); "rest.BP", the resting systolic blood pressure upon admission (measured in mmHg); "chol", cholesterol measured in mg/dL; "maxHR", maximum heart rate acheived (measured in beats/min); "ex.angina", whether or not angina is induced upon exercising, with 0 representing the absence of and 1 representing angina; and "condition", with 3 representing normal, 1 representing a fixed defect, and 2 representing a reversible defect in the heart. 
+
+
+```{r}
+heart <- read.csv("~/heart.csv")
+
+library(dplyr)
+
+heart<-heart%>%select(-restecg, -oldpeak, -slope, -ca, -target, -fbs)%>%rename(condition=thal, chest.pain=cp, maxHR=thalach, ex.angina=exang, rest.BP=trestbps)
+
+heart$sex<-factor(heart$sex, levels=c(1,0))
+
+heart%>%head
+
+heart%>%nrow
+```
+
+#1. MANOVA
+
+```{r}
+manova<-manova(cbind(rest.BP, maxHR, chol, age)~chest.pain, data=heart)
+summary(manova)
+```
+
+
+First, a MANOVA was run on the "heart" dataset, in order to determine if any of the numeric variables in the dataset (resting BP, max HR, cholesterol, and age) significantly differed among the categories of chest pain (0,1,2,3). It was found that the overall MANOVA test was significant (Pillai trace=0.10, pseudo F(4,298), p-value<0.0001), meaning that at least one of the dependent variables differed among the groups of chest pain. Thus, follow-up univariate ANOVAs were conducted for each variable.
+
+
+
+```{r}
+summary.aov(manova)
+```
+
+
+Of the four variables, only max HR was significantly different across at least one of the categories of chest pain, F(1,301)=28.854, p<0.0001. The next step was to run post hoc t tests to determine which categories of chest pain differed in terms of max HR. 
+
+
+
+```{r}
+pairwise.t.test(heart$maxHR, heart$chest.pain, p.adj="none")
+0.05/11
+```
+
+
+The t tests revealed that patients who had no chest pain (value 0) significantly differed in max HR from those who rated their chest pain a 1, as well as from those who rated their chest pain a 2, as well as from those who rated their chest pain a 3. There was no significant difference between any of the other groups. Because 1 MANOVA, 4 ANOVAs, and 6 t tests were run, the probability of committing type 1 error is high. In order to control for Type I error rates, the Bonferroni correction method was utilized. The adjusted level of significance was found to be 0.0045. This did not affect any of the previous conclusions of significance. It is important to add that there are many assumptions to meet when running a MANOVA test. There were no tests run to determine multivariate normality of the dependent variables, homogeneity, linear relationships, outliers, or multicollineariity. Therefore, it is unlikely that all of these assumptions were met.
+
+#2. RANDOMIZATION
+
+In order to conduct a randomization test on this dataset, null and alternative hypotheses had to be constructed. 
+Null hypothesis: Cholesterol levels are the same for each heart condition.
+Alternative hypothesis: Cholesterol levels are not the same for each heart condition.
+
+```{r}
+heart%>%group_by(condition)%>%filter(condition %in% c(0, 3))%>%summarize(means=mean(chol))%>%
+  summarize('mean_diff'=diff(means))
+
+perm1<-data.frame(condition=heart$condition, chol=sample(heart$chol))
+
+perm1%>%group_by(condition)%>%filter(condition %in% c(0, 3))%>%summarize(means=mean(chol))%>%summarize('mean_diff'=diff(means))
+
+perm2<-data.frame(condition=heart$condition, chol=sample(heart$chol))
+
+perm2%>%group_by(condition)%>%filter(condition %in% c(0, 3))%>%summarize(means=mean(chol))%>%summarize('mean_diff'=diff(means))
+
+perm3<-data.frame(condition=heart$condition, chol=sample(heart$chol))
+
+perm3%>%group_by(condition)%>%filter(condition %in% c(0, 3))%>%summarize(means=mean(chol))%>%summarize('mean_diff'=diff(means))
+
+rand_dist<-vector()
+
+for(i in 1:5000){
+new<-data.frame(chol=sample(heart$chol),condition=heart$condition) 
+rand_dist[i]<-mean(new[new$condition==0,]$chol)-
+mean(new[new$condition==3,]$chol)}
+{hist(rand_dist, main="", ylab=""); abline(v=40.2,col="red")}
+
+mean(rand_dist>40.2 | rand_dist< -40.2) 
+
+```
+After performing the randomization test and visualizing it with a histogram, the null hypothesis cannot be rejected, due to a non-significant two-tailed p-value (0.2484). Thus, it can be concluded that cholesterol levels are the same for each heart condition.
+
+
+#3. LINEAR REGRESSION
+A linear regression was then performed in order to predict a response variable, cholesterol, from three other variables and their interactions--sex, resting BP, and condition. The numeric values (cholesterol and resting BP) were first mean-centered and renamed as "chol_c" and "rest.BP_c".
+
+```{r}
+heart1<-heart
+heart1$rest.BP_c<-heart1$rest.BP-mean(heart1$rest.BP)
+heart1$chol_c<-heart1$chol-mean(heart1$chol)
+
+fit<-lm(chol_c~sex*rest.BP_c*condition, data=heart1)
+summary(fit)
+```
+The intercept represents the reference group. In this case, the intercept represents the predicted cholesterol value for a female (value of 0) with average resting blood pressure and a normal heart condition, as -98.62 mg/dL. Each coefficient represents to what degree the intercept will go up or down for every one-unit increase in each. Because there are so many coefficients listed, I will only explain a few. For example, the coefficient "age" represents an increase of 76 mg/dL in cholesterol if the subject is male, while controlling for all other variables. Likewise, the "rest.BP_c" coefficient shows that for each one unit increase in resting blood pressure, there is an increase of 4.4 mg/dL of cholesterol, regardless of all other variables. For the interaction coefficient "sex:condition", when controlling for resting BP, the slope for sex on cholesterol is 48.12 lower for those with heart conditions, compared to those with a normal heart condition. 
+
+###REGRESSION PLOT
+```{r}
+library(ggplot2)
+hearts<-heart1
+hearts$sex<-factor(hearts$sex, levels=c(1,0))
+ggplot(hearts, aes(x=rest.BP_c, y=chol_c, group=sex))+
+  geom_point(aes(color=sex)) + xlab("Resting BP") +ylab("Cholesterol")
+```
+
+###ASSUMPTIONS
+```{r}
+#linearity
+resids<-fit$residuals
+fitvals<-fit$fitted.values
+ggplot()+geom_qq(aes(sample=resids))+geom_qq_line(aes(sample=resids)) 
+
+#normality
+ggplot()+geom_histogram(aes(resids, color="blue"), bins=10)+ theme(legend.position="none")
+
+ks.test(resids, "pnorm", mean=0, sd(resids))
+
+#homoskedasticity
+library(sandwich); library(lmtest)
+bptest(fit)
+```
+
+As can be seen above, the first plot shows that the assumption of linearity is met. The second plot shows that the assumption of normality is met. Additionally, a KS test was run and the p-value was not significant, meaning that the assumption of normality is definitely met. Lastly, to test for homoskedasticity, the BP test was utilized, giving a significant p-value, meaning that this assumption was not met.
+
+###ROBUST STANDARD ERRORS
+```{r}
+coeftest(fit) 
+coeftest(fit, vcov=vcovHC(fit)) 
+```
+Above, the normal-theory standard errors of the regression are compared to the robust standard errors run on the same regression models. The robust standard errors are quite a bit larger than the normal-theory SEs; in fact, all of the coefficient values were significant with the normal SEs, but with the robust SEs, there is no longer a single significant coefficient. 
+The proportion of variation in cholesterol explained by this model is 0.09975. This is the adjusted R-squared value from summary(fit).
+
+#4. BOOTSTRAPPED STANDARD ERRORS
+```{r}
+samp_bse<-replicate(5000, { 
+  boot_dat <- sample_frac(heart1, replace=T)
+  fitbse<-lm(chol_c~sex*rest.BP*condition, data=boot_dat)
+  coef(fitbse)})
+samp_bse%>%t%>%as.data.frame%>%summarize_all(sd)
+```
+In comparison to the normal standard errors, many of the bootstrapped standard errors are much, much higher--namely, the intercept, sex, condition, and sex:condition coefficients. The other coefficients are reasonably close to the robust standard errors. However, each one is higher than its corresponding robust standard error, so it can be concluded that none of the bootstrapped standard errors are significant.
+
+
+#5. LOGISTIC REGRESSION
+```{r}
+library(lmtest)
+heart1$maxHR_c<-heart1$maxHR-mean(heart1$maxHR)
+fitlin<-glm(ex.angina~maxHR+sex+chest.pain, data=heart, family=binomial)
+coeftest(fitlin)
+exp(coef(fitlin))
+```
+The intercept represents the reference group; specifically, the odds of a male patient with an average heart rate and no chest pain NOT experiencing angina upon exercising is 99.1. For the maxHR coefficient, when controlling for sex and chest pain, the odds of not experiencing angina upon exercising increases by a factor of 0.9699. For the sex0 coefficient, when controlling for maxHR and chest pain, the odds of not experiencing angina increases by a factor of 0.539. Finally, for the chest.pain coefficient, when controlling for maxHR and sex, the odds of not experiencing angina increase by a factor of 0.439.
+
+###CONFUSION MATRIX
+```{r}
+library(tidyr)
+probs1<-predict(fitlin, type="response")
+table(predict=as.numeric(probs1>0.5), truth=heart1$ex.angina)%>%addmargins
+
+#Sensitivity (TPR)
+56/99
+#specificity (TNR)
+178/204
+#precision (PPV)
+56/82
+#Accuracy 
+(56+178)/303
+```
+###DENSITY PLOT
+```{r}
+library(ggplot2)
+heart1$ex.angina<-factor(heart1$ex.angina, levels=c(1,0))
+heart1$logit<-predict(fitlin,type="link")
+heart1%>%ggplot()+geom_density(aes(logit, color=ex.angina, fill=ex.angina), alpha=.4)+geom_rug(aes(logit, color=ex.angina))+theme(legend.position=c(.85,.85))+geom_vline(xintercept=0)+xlab("logit (log-odds)")+
+geom_text(x=-0.7,y=.2,label="TN = 178")+ geom_text(x=-1.5,y=.008,label="FN = 26")+
+geom_text(x=1,y=.006,label="FP = 43")+
+geom_text(x=1.8,y=.2,label="TP = 56")
+```
+
+###ROC & AUC
+```{r}
+library(plotROC)
+
+heartroc<-heart1%>%mutate(y=ifelse(ex.angina==0,0,1))
+
+heartroc$prob<-predict(fitlin,type="response")
+
+ROCplot<-ggplot(heartroc)+geom_roc(aes(d=y, m=prob), n.cuts=0)
+
+ROCplot
+
+
+calc_auc(ROCplot)
+```
+This ROC plot is far from perfect, but it is not terrible. According to the rules of thumb for AUC, this model fits in the fair/good category, with an AUC value of 0.8067.
+
+###10-FOLD CV
+```{r}
+heart2<-heart1
+set.seed(1234)
+k=10
+
+data<-heart2[sample(nrow(heart2)),]
+folds<-cut(seq(1:nrow(heart2)), breaks=k, labels=F)
+
+class_diag <- function(probs,truth){
+tab<-table(factor(probs>.5,levels=c("FALSE","TRUE")),truth)
+acc=sum(diag(tab))/sum(tab)
+sens=tab[2,2]/colSums(tab)[2]
+spec=tab[1,1]/colSums(tab)[1]
+ppv=tab[2,2]/rowSums(tab)[2]
+if(is.numeric(truth)==FALSE & is.logical(truth)==FALSE) truth<-as.numeric(truth)-1
+ord<-order(probs, decreasing=TRUE)
+probs <- probs[ord]; truth <- truth[ord]
+TPR=cumsum(truth)/max(1,sum(truth))
+FPR=cumsum(!truth)/max(1,sum(!truth))
+dup<-c(probs[-1]>=probs[-length(probs)], FALSE)
+TPR<-c(0,TPR[!dup],1); FPR<-c(0,FPR[!dup],1)
+n <- length(TPR)
+auc<- sum( ((TPR[-1]+TPR[-n])/2) * (FPR[-1]-FPR[-n]) )
+data.frame(acc,sens,spec,ppv,auc)
+} 
+
+diags<-NULL
+for(i in 1:k){
+  train<-data[folds!=i,]
+  test<-data[folds==i,]
+  truth<-test$ex.angina
+  
+  fitk<-glm(ex.angina~maxHR_c+sex+chest.pain, data=heart2, family="binomial")
+  
+  probsk<-predict(fitk, newdata=test, type="response")
+  
+  diags<-rbind(diags, class_diag(probsk, truth))
+}
+summarize_all(diags, mean)
+```
+The average out-of-sample accuracy was found to be 0.772, the sensitivity 0.872, and the recall 0.801. This represents a fair/good model but it could be better.
+
+#LASSO
+```{r}
+library(glmnet)
+y<-as.matrix(heart2$ex.angina)
+x<-model.matrix(ex.angina~., data=heart2)[,-1]
+x<-scale(x)
+cv<-cv.glmnet(x,y,family="binomial")
+lasso<-glmnet(x,y,family="binomial", lambda=cv$lambda.1se)
+coef(lasso)
+```
+
+After running a LASSO regression, the only variables retained are "chest.pain", "maxHR", and "condition". 
+
+##10-FOLD CV
+```{r}
+set.seed(1234)
+k=10
+
+data2<-heart2[sample(nrow(heart2)),]
+folds2<-cut(seq(1:nrow(heart2)), breaks=k, labels=F)
+
+diags2<-NULL
+for(i in 1:k){
+  train2<-data2[folds!=i,]
+  test2<-data2[folds==i,]
+  truth2<-test2$ex.angina
+  
+  fit3<-glm(ex.angina~maxHR_c+sex+chest.pain, data=heart2, family="binomial")
+  
+  probs3<-predict(fit3, newdata=test2, type="response")
+  
+  diags2<-rbind(diags2, class_diag(probs3, truth2))
+}
+summarize_all(diags2, mean)
+```
+After running the ten-fold cross validation, it can be seen that the accuracy of this model is the same as the logistic regression run in part 5.
+

@@ -1,0 +1,203 @@
+---
+title: "Project 1: Exploratory Data Analysis by Jessica Martin"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+
+In the following document, two separate data sets, both of which were found from https://github.com/rfordatascience/tidytuesday, will be combined and examined. 
+
+The first dataset, named "global_mortality" contains mortality data for 228 political entities (mostly independent countries) for all years between 1990-2016. In this dataset, the mortality rate from 32 distinct factors is recorded as a percentage of the total deaths for each year in each country. In the second dataset, named "lifeexp", 241 political entities (which I will refer to as countries, for simplicity), are presented along with the life expectancy of each country for years 1950-2015. 
+
+Unfortunately, I did not find any information as to how these datasets were acquired. However, it is fortunate that these datasets were created by the same author; therefore, there is a lot of consistency between the datasets, most notably of which are the variables "country" and "country code". These datasets are so compatible because mortality rates for disease and other factors (found in the global_mortality dataset) will greatly contribute to the life expectancy for each country (found in the lifeexp dataset). It will be interesting to explore how life expectancy fluctuates between countries based upon the factors which have the highest mortality percentage. However, it is necessary to mention that neither dataset contains information on differences in healthcare systems and availability of good hospitals with modern medical technology, which will also have a huge impact on life expectancy and the mortality percentage for each factor. 
+
+I picked these datasets because I have a great interest not only in healthcare and knowing which diseases/factors are the most deadly in the world, but also because it is interesting (yet tragic) to see how countries throughout the world differ so greatly in terms of health, mortality, and life expectancy.
+
+# Uploading and Tidying
+
+Because both of these datasets were found from an external source, I had to upload them to the R server, one in the form of an imported excel file, the other of which was a .csv file. I then took a glimpse at each of them in order to familiarize myself with the variables in each dataset. 
+
+```{r}
+library(tidyverse)
+library(readxl)
+global_mortality <- read_excel("global_mortality.xlsx")
+global_mortality%>%glimpse()
+lifeexp<-read.csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2018/2018-07-03/week14_global_life_expectancy.csv")
+lifeexp%>%glimpse()
+```
+
+Both datasets appear to be tidy; however, I will untidy and re-tidy each dataset before joining them. Here, I include a glimpse of the final, "tidy" dataset--"global_mortality1" and "longlifeexp". This is to demonstrate that after untidying and tidying the datasets, they are exactly the same as the initial datasets.
+
+For the "global_mortality" dataset, several steps were needed in order to untidy and retidy. First, to untidy the datset, I used pivot wider. I took all years (1990-2015) and combined them with each mortality factor (which came from columns 4-35). I then began to retidy. To pivot longer, I had to pivot all columns besides "country" and "country_code". Then, I had to use "separate()"" to separate each disease from the year it was associated with. Lastly, I had to pivot wider again in order to put all disease names back into their own columns, along with their values. Similar steps were followed to untidy and retidy the "lifeexp" dataset, except I did not have to use separate() and I did not have to pivot wider when re-tidying. 
+
+```{r}
+wideglobal<-global_mortality%>%pivot_wider(names_from="year",values_from=c(4:35))
+longglobal1<-wideglobal%>%pivot_longer(cols=-c("country","country_code"))
+longglobal2<-longglobal1%>%separate(name,into=c("disease","year"),sep="_")
+global_mortality1<-longglobal2%>%pivot_wider(names_from="disease",values_from="value")
+
+global_mortality1%>%glimpse()
+
+widelife<-lifeexp%>%pivot_wider(names_from="year",values_from="life_expectancy")
+longlifeexp<-widelife%>%pivot_longer(cols=-c("country","code"),names_to="year",values_to="life_expectancy")
+
+longlifeexp%>%glimpse()
+```
+
+# Joining
+
+The next step is to join the datasets into one and remove the NAs. I used a full join for this because I want to keep as much information as I can from each data set; by using full_join, no rows of data will be dropped. However, there will inevitably be a lot of "NA" observations from the lifeexp dataset because it includes data for 40 previous years than the global_mortality dataset. Thus, the final joined dataset dropped 14,731 rows from the initially joined dataset. This seems like a significant loss of data; however, it just means that the joined dataset focuses solely on years 1990-2015, which is still relevant for this project.
+
+```{r}
+joined<-full_join(lifeexp,global_mortality)
+noNA<-joined%>%na.omit()
+final_joined<-noNA%>%select(-"country_code")
+final_joined%>%glimpse()
+nrow(joined)-nrow(final_joined)
+```
+
+# Wrangling
+In this section, I will use all dplyr functions to explore and summarize statistics in my newly joined dataset. 
+
+###Filter, Select, Arrange
+
+```{r}
+final_joined%>%filter(year==max(year)|year==min(year))%>%select(1,3,4)%>%arrange(life_expectancy)%>%glimpse()
+```
+This code is useful for observing the life expectancy for each country in the first year of the dataset and for the last year of the dataset and lists the life expectancies from least to greatest.
+
+### Mutate
+```{r}
+mutated<-final_joined%>%group_by(country)%>%mutate(meanlifeexp=mean(life_expectancy,na.rm=T))%>%glimpse()
+```
+This code creates a new column in the dataset which presents the total mean life expectancy for each country in combined years 1990-2015.
+
+### Summarize and Group_by
+For the following ten summarizing statistics, I used pivot_longer on the final_joined dataset and named it "longdata".
+
+Finding the mean mortality percentage of cardiovascular disease in years 1990-2015 for each country:
+```{r}
+longdata<-final_joined%>%pivot_longer(cols=c(5:36),names_to="diseases",values_to="values")
+longdata%>%group_by(country)%>%filter(diseases=="Cardiovascular diseases (%)")%>%summarize(meanmortality=mean(values))%>%arrange(desc(meanmortality))%>%glimpse()
+```
+Mean mortality percentage of cancers in all countries from years 1990-2015:
+```{r}
+longdata%>%group_by(country)%>%filter(diseases=="Cancers (%)")%>%summarize(meanmortality=mean(values))%>%arrange(desc(meanmortality))%>%glimpse()
+```
+Mean mortality percentage of respiratory diseases in all countries from years 1990-2015:
+```{r}
+longdata%>%group_by(country)%>%filter(diseases=="Respiratory diseases (%)")%>%summarize(meanmortality=mean(values))%>%arrange(desc(meanmortality))%>%glimpse()
+```
+Mean mortality percentage of diabetes in all countries from years 1990-2015:
+```{r}
+longdata%>%group_by(country)%>%filter(diseases=="Diabetes (%)")%>%summarize(meanmortality=mean(values))%>%arrange(desc(meanmortality))%>%glimpse()
+```
+Mean US mortality percentage of cardiovascular disease from years 1990-2015:
+```{r}
+longdata%>%filter(country=="United States" & diseases=="Cardiovascular diseases (%)")%>%summarize(meanUSmortality=mean(values))
+```
+Mean US mortality percentage of cancer from years 1990-2015:
+```{r}
+longdata%>%filter(country=="United States" & diseases=="Cancers (%)")%>%summarize(meanUSmortality=mean(values))
+```
+Mean US mortality percentage of respiratory diseases from years 1990-2015:
+```{r}
+longdata%>%filter(country=="United States" & diseases=="Respiratory diseases (%)")%>%summarize(meanUSmortality=mean(values))
+```
+
+Mean US mortality percentage of diabetes from years 1990-2015:
+```{r}
+longdata%>%filter(country=="United States" & diseases=="Diabetes (%)")%>%summarize(meanUSmortality=mean(values))
+```
+The standard deviation of cardiovascular diseases in all countries from years 1990-2015:
+```{r}
+longdata%>%group_by(country)%>%filter(diseases=="Cardiovascular diseases (%)")%>%summarize(sdmortality=sd(values))%>%arrange(desc(sdmortality))%>%glimpse()
+```
+The standard deviation of diarrheal diseases in all countries from years 1990-2015:
+```{r}
+longdata%>%group_by(country)%>%filter(diseases=="Diarrheal diseases (%)")%>%summarize(sdmortality=sd(values))%>%arrange(desc(sdmortality))%>%glimpse()
+```
+
+The first four summary statistic codes explore the mean mortality prevalence of cardiovascular disease, cancers, respiratory diseases, and diabetes in all countries and ranks them from highest mortality percentage to lowest. This is a useful statistic because for each specified disease, we can see where the mortality prevalence of that disease is the highest. The next four summary statistic codes explore the mean mortality prevalence of the same four diseases in the United States. These statistics allow for relative comparison between the country that we are most familiar with and the other countries of the world. These statistics revealed unexpected results. For example, it is commonly thought that the US has extremely high mortality rates due to cardiovascular disease. However, upon comparing the US cardiovascular disease mortality with that of Georgia (the country with the highest mean mortality from cardiovascular disease), the US prevalence does not seem nearly as high. 
+
+The last two summary statistic codes explore the standard deviations of cardiovascular diseases and diarrheal diseases in years 1990-2015 for all countries, and ranks the standard deviations from high to low. I chose to examine the standard deviation of cardiovascular disease because it has the highest overall mortality in the world. I chose diarrheal diseases because it is more common in third-world countries (countries with low life expectancy); by summarizing the standard deviation, it can be determined which countries have experienced the most fluctuation in mortality prevalence for each disease. 
+
+
+# Visualization
+
+### Correlation Heat Map
+
+```{r}
+numeric<-final_joined%>%select(4:15)
+cormap<-round(cor(numeric),2)
+library(reshape2)
+melted_cormap<-melt(cormap)
+head(melted_cormap)
+ggplot(data=melted_cormap, aes(x=Var1,y=Var2,fill=value))+geom_tile()+ggtitle("Correlation Map of Numeric Variables")+xlab("Variable 1")+ylab("Variable 2")+theme(axis.text.x = element_text(angle=90))
+```
+
+### GGPlots
+
+In order to graph with three variables (disease, prevalence, and country), it was necessary for me to pivot the dataset longer. Because there are so many different countries in the dataset, I decided to use only 10 total--the five countries with highest life expectancies and the five countries with lowest life expectancy. Additionally, due to the large number of mortality factors in this dataset, I removed all factors which had lower than 8% mortality rate in order to prevent a cluttered graph.    
+
+```{r}
+longdata<-final_joined%>%pivot_longer(cols=c(5:36),names_to="diseases",values_to="values")
+highnlow<-longdata%>%group_by(country)%>%filter(year==2015 & values>8)%>%arrange(desc(life_expectancy))
+topbottom5<-highnlow%>%filter(life_expectancy>82.8 | life_expectancy<54)
+ggplot(data=topbottom5, aes(x=diseases,y=values,color=country))+geom_point()+theme(axis.text.x = element_text(angle=90))+ggtitle("Percent Mortality According to Disease")+xlab("Disease")+ylab("Mortality (%)")
+```
+
+In the graph above, the five countries with the highest life expectancy in the year 2015 was plotted along with the five countries with the lowest life expectancy in the year 2015. Because I only selected values which are higher than 8% mortality, not all countries are represented for each disease. However, there are still some interesting findings; for example, Lesotho's mortality prevalence for HIV/AIDS is significantly higher than other countries who have similar life expectancy values. Additionally, there is an exactly even split between the top five and bottom five countries in regards to cardiovascular disease. This will be explored further in subsequent graphs.
+
+```{r}
+highnlow$country <- ifelse(highnlow$life_expectancy<median(highnlow$life_expectancy),"Low Life Expectancy","High Life Expectancy")
+ggplot(data=highnlow, aes(x=country,fill=diseases))+geom_bar(position="fill")+theme(axis.text.x = element_text(angle=90))+ggtitle("Comparing Top- and Bottom-Half Countries")+ylab("Percent Mortality")+scale_y_continuous(breaks=seq(0, 1, .1))
+```
+
+The plot above places all countries above the median life expectancy in one group (High Life Expectancy) and those below the median life expectancy in another group (Low Life Expectancy). It then shows the relative mortality prevalence in each of the selected diseases. This graph is interesting because it shows that many diseases are much more prevalent in the low life expectancy countries--such as neonatal deaths and lower respiratory infections. Conversely, it shows that the mortality prevalence of cardiovascular disease (the top color on the bars) is much higher in the high life expectancy countries. 
+
+```{r}
+highnlow1<-longdata%>%group_by(country)%>%filter(year==2015 & values>3)%>%arrange(desc(life_expectancy))
+JR<-highnlow1%>%filter(country=="Japan"|country=="Rwanda" & values>3)
+ggplot(data=JR, aes(x=country, y=values, fill=diseases))+geom_bar(stat="summary",fun.y="mean")+theme_dark()+ggtitle("Comparing Japan and Rwanda")+ylab("Percent Mortality")
+```
+
+The graph above compares two specific countries--one with the highest life expectancy (Japan) and one with the lowest life expectancy (Rwanda). It is important to note that neither country's bar reaches 100%; this is because I excluded all mortality factors that had values lower than 8%. Just as the previous graph, this one shows relative mortality prevalence of disease in a high life expectancy country along with a low life expectancy country. This graph is relevant because the two bars look nothing alike, meaning that each respective countries faces mortality from completely different factors. Most of Japan's mortality comes from cancers, cardiovascular disease, and dementia, and suffers insignificantly from all other factors (which is why its bar is closer to 100%). Conversely, Rwanda suffers mortality much more evenly from all the diseases/factors listed (which is why a larger percentage of data is missing).
+
+# Dimensionality Reduction
+For clustering, I wanted to examine the relationship between cardiovascular disease (a high mortality factor in all countries) and life expectancy. I chose cardiovascular disease from all other mortality factors because of the interesting implications found in the plots above. First, I first had to access the "final_joined" dataset and change the inconvenient column name "Cardiovascular diseases (%)" to "cardio_diseases" because R is not able to run column names with spaces in them, apparently. After this, I used the silhouette method to determine how many clusters would be sufficient for this data. The highest silhouette width was 2. Typically, I would want more clusters; however, I want to continue making the distinction between low life expectancy countries and high life expectancy countries, as I did in the plots above. 
+
+```{r}
+names(final_joined)[5]<-"cardio_disease"
+names(final_joined)
+
+library(cluster)
+clust_dat<-final_joined%>%filter(year==2015)%>%select(cardio_disease,life_expectancy)
+sil_width<-vector()
+for(i in 2:10){
+  kms <- kmeans(clust_dat,centers=i)
+  sil <- silhouette(kms$cluster,dist(clust_dat))
+  sil_width[i]<-mean(sil[,3]) 
+}
+ggplot()+geom_line(aes(x=1:10,y=sil_width))+scale_x_continuous(name="k",breaks=1:10)
+
+kmeans1<-clust_dat%>%kmeans(2)
+kmeans1
+
+kmeans1$size
+kmeans1$centers
+kmeans1$cluster
+
+kmeans1$cluster<-as.factor(kmeans1$cluster)
+clust_dat<-as.data.frame(clust_dat)
+kmeansclust <- clust_dat %>% mutate(cluster=kmeans1$cluster)
+ggplot(data=kmeansclust,(aes(x=life_expectancy, y=cardio_disease, color=cluster))) + geom_point()+ggtitle("K-Means Clustering: Cardiovascular Disease vs Life Expectancy")+xlab("Life Expectancy")+ylab("Prevalence of Cardiovascular Disease")
+```
+
+As can be deduced from the graph above, a high mortality rate for cardiovascular disease is mostly associated with countries who have higher life expectancies (this is the blue cluster). The opposite is also true: low percent mortality in regards to cardiovascular disease is associated with countries who have low life expectancies (this is the red cluster). Ultimately, this makes sense because the countries who have low life expectancies suffer a greater overall mortality percentage to a variety of different factors; this can be observed in the bar charts above. For countries who have high life expectancy, there are a smaller number of mortality factors which significantly affect life expectancy.  This alludes to the healthcare quality that exists in low life expectancy countries and high life expectancy countries. In low life expectancy countries, there are many more factors that can cause mortality, and at higher percentages, than in a high life expectancy country. This conclusion supports the cluster graph above. 
