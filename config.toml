@@ -22,6 +22,7 @@ theme = "hugo-sustain"
 [params.social]
   Github        = "jdm6743"
   Email         = "jmartin2016@hotmail.com"
+  Twitter       = "j_martin17"
 
 
 ## Main Menu

@@ -12,6 +12,16 @@
     
     
     <item>
+      <title>Python &amp; R</title>
+      <link>/blog/python/</link>
+      <pubDate>Fri, 15 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/blog/python/</guid>
+      <description>It may seem like Python and R have nothing in common. However, they can sometimes be used interchangeably. While only a short and sweet example is given, it just goes to show that R and Python can exist harmoniously.
+#R library(reticulate) #Python import pandas as pd import seaborn as sns iris=sns.load_dataset(&amp;#39;iris&amp;#39;) length=iris[&amp;quot;petal_length&amp;quot;] width=iris[&amp;quot;petal_width&amp;quot;] #R library(dplyr) ## ## Attaching package: &amp;#39;dplyr&amp;#39; ## The following objects are masked from &amp;#39;package:stats&amp;#39;: ## ## filter, lag ## The following objects are masked from &amp;#39;package:base&amp;#39;: ## ## intersect, setdiff, setequal, union L&amp;lt;-py$length L%&amp;gt;%head() ## 0 1 2 3 4 5 ## 1.</description>
+    </item>
+    
+    <item>
       <title>Projects</title>
       <link>/projects/</link>
       <pubDate>Sun, 02 Oct 2016 22:55:05 -0400</pubDate>

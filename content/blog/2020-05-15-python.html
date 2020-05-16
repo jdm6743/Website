@@ -1,0 +1,51 @@
+---
+title: Python & R
+author: ''
+date: '2020-05-15'
+slug: python
+categories: []
+tags: []
+description: ''
+---
+
+
+
+<div class="figure">
+<img src="/blog/2020-05-15-python_files/python_.jpg" />
+
+</div>
+<p>It may seem like Python and R have nothing in common. However, they can sometimes be used interchangeably. While only a short and sweet example is given, it just goes to show that R and Python can exist harmoniously.</p>
+<pre class="r"><code>#R
+library(reticulate)</code></pre>
+<pre class="python"><code>#Python
+import pandas as pd
+import seaborn as sns
+iris=sns.load_dataset(&#39;iris&#39;)
+length=iris[&quot;petal_length&quot;]
+width=iris[&quot;petal_width&quot;]</code></pre>
+<pre class="r"><code>#R
+library(dplyr)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>L&lt;-py$length
+L%&gt;%head()</code></pre>
+<pre><code>## 0   1   2   3   4   5   
+## 1.4 1.4 1.3 1.5 1.4 1.7</code></pre>
+<pre class="r"><code>W&lt;-py$width
+W%&gt;%head()</code></pre>
+<pre><code>## 0   1   2   3   4   5   
+## 0.2 0.2 0.2 0.2 0.2 0.4</code></pre>
+<pre class="python"><code>#Python
+import numpy as np
+x=np.array(r.L)
+y=np.array(r.W)</code></pre>
+<pre class="r"><code>#R
+library(ggplot2)
+ggplot()+geom_point(aes(py$x,py$y))+xlab(&quot;Petal Length&quot;)+ylab(&quot;Petal Width&quot;)</code></pre>
+<p><img src="/blog/2020-05-15-python_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>

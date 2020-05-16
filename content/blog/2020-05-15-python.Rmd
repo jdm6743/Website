@@ -1,0 +1,53 @@
+---
+title: Python & R
+author: ''
+date: '2020-05-15'
+slug: python
+categories: []
+tags: []
+description: ''
+---
+
+![](/blog/2020-05-15-python_files/python_.jpg)
+
+It may seem like Python and R have nothing in common. However, they can sometimes be used interchangeably. While only a short and sweet example is given, it just goes to show that R and Python can exist harmoniously. 
+
+```{r}
+#R
+library(reticulate)
+```
+
+```{python}
+#Python
+import pandas as pd
+import seaborn as sns
+iris=sns.load_dataset('iris')
+length=iris["petal_length"]
+width=iris["petal_width"]
+```
+
+```{r}
+#R
+library(dplyr)
+L<-py$length
+L%>%head()
+W<-py$width
+W%>%head()
+```
+
+```{python}
+#Python
+import numpy as np
+x=np.array(r.L)
+y=np.array(r.W)
+```
+
+```{r}
+#R
+library(ggplot2)
+ggplot()+geom_point(aes(py$x,py$y))+xlab("Petal Length")+ylab("Petal Width")
+```
+
+
+
+
